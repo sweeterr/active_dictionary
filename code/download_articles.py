@@ -20,7 +20,7 @@ import os
 
 
 # input login and password for http://sem.ruslang.ru/slovnik.php
-AUTHENTICATION = 'login', 'password'
+AUTHORIZATION = 'login', 'password'
 
 
 RE_LINE = re.compile('<td bgcolor=.+?<a href="(.+?)">(.+?)</a>.+?>(\[.*?\])<')
@@ -37,12 +37,12 @@ RE_WORD2 = re.compile('<nobr>(.+?)</nobr>', flags=re.DOTALL)
 def download_articles(main_url, letter, articles_path):
     c = 0
     finished = False
-    current_url = u'?letter={}'.format(letter)
+    current_url = '?letter={}'.format(letter)
     letter_articles_path = os.path.join(articles_path, letter)
     if not os.path.exists(letter_articles_path):
         os.mkdir(letter_articles_path)
     while not finished:
-        text = requests.get(main_url + current_url, auth=AUTHENTICATION).text
+        text = requests.get(main_url + current_url, auth=AUTHORIZATION).text
         rows = RE_ROW.findall(text)
         for row in rows:
             word, link, author = get_data(row)
@@ -110,7 +110,7 @@ def get_data(row):
 # downloads code from the vocable page
 def download_vocable(link):
     page = requests.get(link, auth=('s', 's'))
-    text = re.sub(u'.+<hr>', u'', page.text, flags=re.DOTALL)  # remove header
+    text = re.sub('.+<hr>', '', page.text, flags=re.DOTALL)  # remove header
     return text
 
 
@@ -122,11 +122,11 @@ def write_to_file(text, path):
 
 # goes through a list of letters and initiates search for vocables for
 # each letter
-if __name__ == u'__main__':
+if __name__ == '__main__':
     start_time = time.time()
-    main_url = u'http://sem.ruslang.ru/slovnik.php'
+    main_url = 'http://sem.ruslang.ru/slovnik.php'
     letters = 'абвгдежзийклмнопрстуфхцчшщъыьэюя'
-    articles_path = 'articles'
+    articles_path = '../articles'
     if not os.path.exists(articles_path):
         os.mkdir(articles_path)
     for letter in letters:
